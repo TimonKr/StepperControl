@@ -1,0 +1,183 @@
+Widget: 
+
+<ControlWindow>
+    stepper_res_ip: stepper_res_ip
+    com_ip:  com_ip
+    pin_pul_id: pin_pul_id
+    pin_dir_id: pin_dir_id  
+    speed_ip: speed_ip
+    connection_idc: connection_idc
+
+    GridLayout:
+        rows: 6
+        spacing:10
+        GridLayout:
+            cols: 3
+            rows: 2
+            spacing: 10
+            Label:
+                text: "COM Port:"
+                color: 1,1,1,1
+                valign: 'middle'
+                halign: 'left'
+                height: 30 
+                size_hint_y: None
+            Label:
+                text: "Puls Pin:"
+                color: 1,1,1,1
+                valign: 'middle'
+                halign: 'left'
+                height: 30 
+                size_hint_y: None
+            Label:
+                text: "Direction Pin:"
+                color: 1,1,1,1
+                valign: 'middle'
+                halign: 'left'
+                height: 30 
+                size_hint_y: None
+            
+            TextInput:
+                id: com_ip
+                multiline: False
+                background_color: 0.2, 0.2, 0.2, 1
+                foreground_color: 1, 1, 1, 1
+                height: 30 
+                size_hint_y: None
+                on_focus: app.update_settings(com_ip, args[1], "Com Port", str)
+            TextInput:
+                id: pin_pul_id
+                multiline: False
+                background_color: 0.2, 0.2, 0.2, 1
+                foreground_color: 1, 1, 1, 1
+                height: 30 
+                size_hint_y: None
+                on_focus: app.update_settings(pin_pul_id, args[1], "Puls Pin", int)
+            TextInput:
+                id:  pin_dir_id 
+                multiline: False
+                background_color: 0.2, 0.2, 0.2, 1
+                foreground_color: 1, 1, 1, 1
+                height: 30 
+                size_hint_y: None
+                on_focus: app.update_settings(pin_dir_id, args[1], "Direction Pin", int)
+        GridLayout:
+            cols: 2
+            rows: 2
+            spacing: 10
+
+            Label:
+                text: "Stepper Res. (steps/revolution):"
+                color: 1,1,1,1
+                valign: 'middle'
+                halign: 'left'
+                height: 30 
+                size_hint_y: None
+        
+
+            Label:
+                text: "Speed (rotations/s):"
+                color: 1,1,1,1
+                valign: 'middle'
+                halign: 'left'
+                height: 30 
+                size_hint_y: None
+
+            TextInput:
+                id: stepper_res_ip
+                multiline: False
+                background_color: 0.2, 0.2, 0.2, 1
+                foreground_color: 1, 1, 1, 1
+                height: 30 
+                size_hint_y: None
+                on_focus: app.update_settings(stepper_res_ip, args[1], "Stepper Resolution", int)
+
+            
+
+
+            TextInput:
+                id: speed_ip
+                multiline: False
+                background_color: 0.2, 0.2, 0.2, 1
+                foreground_color: 1, 1, 1, 1
+                height: 30 
+                size_hint_y: None
+                on_focus: app.update_settings(speed_ip, args[1], "Speed", float)
+
+        GridLayout:
+            cols: 2
+            spacing: 10
+            Label:
+                text: "Connection Status:"
+                color: 1,1,1,1
+                valign: 'middle'
+                halign: 'left'
+                height: 30 
+                size_hint: 1, 1
+                size_hint_y: None  
+
+            BoxLayout:
+                id: connection_idc
+                size_hint_y: None
+                height: 30
+                
+                canvas.before:
+
+                    Color:
+                        rgba: 1, 0, 0, 1  # Default Red (Disconnected)
+                    Ellipse:
+                        pos: self.pos
+                        size: 30, 30
+        
+        GridLayout:
+            cols: 3
+            rows: 2
+            spacing: 10
+
+            BoxLayout:
+                height: 30
+                size_hint_y: None 
+                Label:
+                    id: pos_min_lb
+                    text: f'000'
+            BoxLayout:
+                height: 30
+                size_hint_y: None 
+                Label:
+                    id: pos_current_lb
+                    text: f'000'
+            BoxLayout:
+                height: 30
+                size_hint_y: None 
+                Label:
+                    id: pos_max_lb
+                    text: f'000'
+            Button:
+                text: 'Set Min Position'
+                id: set_pos_min_bt
+                size_hint_y: None
+            Button:
+                text: 'Zero Position'
+                id: set_pos_zero_bt
+                size_hint_y: None
+            Button:
+                text: 'Set Max Position'
+                id: set_pos_max_bt
+                size_hint_y: None
+
+        GridLayout:
+            cols: 3
+            spacing: 10
+            Button:
+                text: 'Move Backward'
+                id: move_bwrd_bt
+                size_hint_y: None
+            Button:
+                text: 'Stop'
+                id: move_stop_bt
+                size_hint_y: None
+            Button:
+                text: 'Move Forward'
+                id: move_fwrd_bt
+                size_hint_y: None
+                

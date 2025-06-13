@@ -173,12 +173,51 @@ class StepperMotor(object):
         
 
 
+class MockSerial:
+    def __init__(self, *args, **kwargs):
+        self.buffer = []
+
+    def write(self, command):
+        print(f"Mock write: {command.decode('utf-8').strip()}")
+
+    def readline(self):
+        # Simulate responses based on commands sent
+        if self.buffer:
+            return self.buffer.pop(0)
+        return b'0\n'  # Default response for GET commands
+
+    def close(self):
+        print("Mock close called.")
+
+
+class DebugStepperMotor(StepperMotor):
+    def __init__(self, stepper_pin, dir_pin, com_port):
+        # Replace actual serial with MockSerial
+        self._ser = MockSerial()
+        self._connected = True  # Simulate being connected
+        super().__init__(stepper_pin, dir_pin, com_port)
+
+    def _connect(self):
+        # Override to avoid trying to connect to real serial port
+        self._connected = True
+
+# Example usage:
+
+
         
 
 import time
 
 if __name__ == "__main__":
+    motor = DebugStepperMotor(stepper_pin=1, dir_pin=2, com_port='COM3')
 
+    # Setting properties and observing debug prints
+    motor.pin_dir = 3  # Should print "Setting pin_dir to 3"
+    current_speed = motor.speed  # Should print "Getting speed"
+
+    # You can also simulate sending commands and receiving responses by modifying the buffer.
+    motor._ser.buffer.append(b'100\n')  # Simulate response for speed
+    print(motor.speed)  # Sh
 
     t = StepperMotor(10, 11,'COM5')
     # t.resolution = 1600
