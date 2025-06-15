@@ -1,9 +1,9 @@
 import serial 
 
+import numpy as np
 
 
-
-class StepperMotor(object): 
+class StepperMotor  (object): 
     COMMANDS = {"SET": {"MOVE": bool,  "RES": int,"DIR": bool,  "STEPS": int, "SPEED": float, "LOWERLIM": int, "UPPERLIM": int , "PULPIN": int, "DIRPIN": int}, 
     "GET": {"MOVE": bool, "RES": int, "DIR": bool, "STEPS": int, "SPEED": float, "LOWERLIM": int, "UPPERLIM": int}}
     DELAY = 0.5
@@ -200,7 +200,9 @@ class DebugStepperMotor(StepperMotor):
     def _connect(self):
         # Override to avoid trying to connect to real serial port
         self._connected = True
-
+    @property
+    def step_count(self):
+        return np.random.randint(10)
 # Example usage:
 
 

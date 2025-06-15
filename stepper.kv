@@ -7,6 +7,9 @@ Widget:
     pin_dir_id: pin_dir_id  
     speed_ip: speed_ip
     connection_idc: connection_idc
+    pos_current_lb: pos_current_lb
+    pos_min_lb: pos_min_lb
+    pos_max_lb: pos_max_lb
 
     GridLayout:
         rows: 6
@@ -156,6 +159,7 @@ Widget:
                 text: 'Set Min Position'
                 id: set_pos_min_bt
                 size_hint_y: None
+                on_press: app.set_stepper_lim('lower')
             Button:
                 text: 'Zero Position'
                 id: set_pos_zero_bt
@@ -164,6 +168,7 @@ Widget:
                 text: 'Set Max Position'
                 id: set_pos_max_bt
                 size_hint_y: None
+                on_press: app.set_stepper_lim('upper')
 
         GridLayout:
             cols: 3
@@ -172,12 +177,15 @@ Widget:
                 text: 'Move Backward'
                 id: move_bwrd_bt
                 size_hint_y: None
+                on_press: app.rotate_stepper(False)
             Button:
                 text: 'Stop'
                 id: move_stop_bt
                 size_hint_y: None
+                on_press: app.stop_stepper()
             Button:
                 text: 'Move Forward'
                 id: move_fwrd_bt
                 size_hint_y: None
+                on_press: app.rotate_stepper(True)
                 

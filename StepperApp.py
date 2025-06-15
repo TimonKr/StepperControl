@@ -20,7 +20,7 @@ from StepperControl import StepperMotor, DebugStepperMotor
 
 DEBUG = True
 CONNECTION_INTERVAL= 10 
-    
+POSITION_INTERVAL = 1    
 
 
 
@@ -32,7 +32,9 @@ class ControlWindow(BoxLayout):
     pin_pul_id = ObjectProperty(None)
     pin_dir_id = ObjectProperty(None)
     connection_idc = ObjectProperty(None)
-
+    pos_current_lb = ObjectProperty(None)
+    pos_min_lb = ObjectProperty(None)
+    pos_max_lb = ObjectProperty(None)
     
 
 
@@ -57,6 +59,7 @@ class StepperApp(App):
 
         
         self.connectivity_check = Clock.schedule_interval(self.check_connection, CONNECTION_INTERVAL)
+        self.update_position = Clock.schedule_interval(self.update_stepper_pos, POSITION_INTERVAL)
 
         return self.layout
     
@@ -70,7 +73,7 @@ class StepperApp(App):
                 })
     
     def on_start(self):
-        self.motor = init_board_connection(self.config['settings'], DEBUG)
+        self.motor = self.init_board_connection(DEBUG)
          
         for key in self.settings:
             self.settings[key].text = str(self.config['settings'][key])
@@ -87,13 +90,16 @@ class StepperApp(App):
                 if self.motor.conencted:
                     if key == 'Com Port':
                         self.motor.close()
-                        self.motor = init_board_connection(self.config['settings'], DEBUG)
+                        self.motor = self.init_board_connection(DEBUG)
                     elif key == 'Direction Pin':
                         self.motor.pin_dir = int(self.config['settings'][key])
                     elif key == 'Puls Pin':
                         self.motor.pin_pul = int(self.config['settings'][key])
                     elif key == 'Speed':
                         self.motor.speed = float(self.config['settings'][key])
+                        self.control.speed_ip.text = str(self.motor.speed)
+                        self.config.set('settings', key, ttype(self.motor.speed))
+                        self.config.write()
                     elif key == 'Stepper Resolution':
                         self.motor.resolution = int(self.config['settings'][key])
 
@@ -102,30 +108,53 @@ class StepperApp(App):
         except:
             pass # i know im a lazy bitch
 
-    def update_stepper_res(self):
-        if self.motor.connected:
-            self.motor.resolution = int()
-
 
     def check_connection(self, dt):
         try:
             color = (0, 1, 0, 1) if self.motor.connected else (1, 0, 0, 1)
             self.control.connection_idc.canvas.before.children[0].rgba = color
             if not self.motor.connected:
-                self.motor = init_board_connection(self.config['settings'], DEBUG)
+                self.motor = self.init_board_connection(DEBUG)
+                
             
         except: 
             pass
 
-def init_board_connection(config, debug):
-    if debug: 
-        motor = DebugStepperMotor(config['Puls Pin'], config['Direction pin'], config['Com Port'])
-    else:
-        motor = StepperMotor(config['Puls Pin'], config['Direction pin'], config['Com Port'])
+    def update_stepper_pos(self, dt):
+        if self.motor.connected:
+            self.control.pos_current_lb.text = str(self.motor.step_count)
 
-    motor.resolution = int(config['Stepper Resolution'])
-    motor.speed = float(config['Speed'])
-    return motor
+    def rotate_stepper(self, direction):
+            if self.motor.moving:
+                self.motor.stop()
+            self.motor.direction = direction
+            self.motor.rotate()
+        
+    def stop_stepper(self):
+        if self.motor.connected:
+            self.motor.stop()
+    def set_stepper_lim(self, key):
+        if self.motor.connected:
+            if key == 'lower':
+                self.motor.lower_lim = int(self.motor.step_count)
+                self.control.pos_min_lb.text = str(self.motor.lower_lim)
+            else:
+                self.motor.upper_lim = int(self.motor.step_count)
+                self.control.pos_max_lb.text = str(self.motor.upper_lim)
+    
+
+
+
+    def init_board_connection(self, debug=False):
+        config = self.config['settings']
+        if debug: 
+            motor = DebugStepperMotor(config['Puls Pin'], config['Direction pin'], config['Com Port'])
+        else:
+            motor = StepperMotor(config['Puls Pin'], config['Direction pin'], config['Com Port'])
+
+        motor.resolution = int(config['Stepper Resolution'])
+        motor.speed = float(config['Speed'])
+        return motor
 
 
 
