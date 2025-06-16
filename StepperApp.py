@@ -125,6 +125,7 @@ class StepperApp(App):
             self.control.pos_current_lb.text = str(self.motor.step_count)
 
     def rotate_stepper(self, direction):
+            
             if self.motor.connected:
                 if self.motor.moving:
                     self.motor.stop()
@@ -162,12 +163,14 @@ class StepperApp(App):
     def init_board_connection(self, debug=False):
         config = self.config['settings']
         if debug: 
-            motor = DebugStepperMotor(int(config['Puls Pin']), int(config['Direction pin']), config['Com Port'])
+            motor = DebugStepperMotor(int(config['Puls Pin']), int(config['Direction Pin']), config['Com Port'])
         else:
-            motor = StepperMotor(int(config['Puls Pin']), int(config['Direction pin']), config['Com Port'])
+            motor = StepperMotor(int(config['Puls Pin']), int(config['Direction Pin']), config['Com Port'])
 
         motor.resolution = int(config['Stepper Resolution'])
         motor.speed = float(config['Speed'])
+        motor.pin_dir = int(config['Direction Pin'])
+        motor.pin_pul = int(config['Puls Pin'])
 
         return motor
 

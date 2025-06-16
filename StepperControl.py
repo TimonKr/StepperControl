@@ -13,7 +13,7 @@ class StepperMotor  (object):
         self._com: str = com_port 
         self._ser: None
         self._connected = False
-        self._connect()
+
         self._resolution: int = 1
         self._speed: float = 1.0
         self._direction = False
@@ -23,14 +23,17 @@ class StepperMotor  (object):
 
         self._step_limit_lower = -10**100
         self._step_limit_upper =  10**100
+        self._connect()
 
     def _connect(self):
         try: 
             self._ser = serial.Serial(self._com, baudrate=115200, timeout=None)
             if self._ser is not None: 
                 self._connected = True
-                self.pin_dir = self._pin_dir
-                self.pin_pul = self._pin_pul
+                pin = self._pin_dir
+                self.pin_dir = pin
+                pin = self._pin_pul
+                self.pin_pul = pin
             else:
                 self._connected = False
         except:
