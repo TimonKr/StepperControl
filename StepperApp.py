@@ -18,9 +18,9 @@ from StepperControl import StepperMotor, DebugStepperMotor
 
 
 
-DEBUG = True
+DEBUG = False
 CONNECTION_INTERVAL= 10 
-POSITION_INTERVAL = 1    
+POSITION_INTERVAL = 1 
 
 
 
@@ -87,7 +87,7 @@ class StepperApp(App):
             if not focus: 
                 self.config.set('settings', key, ttype(instance.text))            
                 self.config.write()
-                if self.motor.conencted:
+                if self.motor.connected:
                     if key == 'Com Port':
                         self.motor.close()
                         self.motor = self.init_board_connection(DEBUG)
@@ -125,35 +125,50 @@ class StepperApp(App):
             self.control.pos_current_lb.text = str(self.motor.step_count)
 
     def rotate_stepper(self, direction):
-            if self.motor.moving:
-                self.motor.stop()
-            self.motor.direction = direction
-            self.motor.rotate()
+            if self.motor.connected:
+                if self.motor.moving:
+                    self.motor.stop()
+                self.motor.direction = direction
+                self.motor.rotate()
+
         
     def stop_stepper(self):
         if self.motor.connected:
             self.motor.stop()
-    def set_stepper_lim(self, key):
+    
+    def set_stepper_lim(self, key, reset=False):
         if self.motor.connected:
             if key == 'lower':
-                self.motor.lower_lim = int(self.motor.step_count)
-                self.control.pos_min_lb.text = str(self.motor.lower_lim)
+                if reset:
+                    self.motor.lower_lim = int(-10**100)
+                    self.control.pos_min_lb.text = '000'
+                else:
+                    self.motor.lower_lim = int(self.motor.step_count)
+                    self.control.pos_min_lb.text = str(self.motor.lower_lim)
             else:
-                self.motor.upper_lim = int(self.motor.step_count)
-                self.control.pos_max_lb.text = str(self.motor.upper_lim)
+                if reset:
+                    self.motor.upper_lim = int(10**100)
+                    self.control.pos_max_lb.text = '000'
+                else:
+                    self.motor.upper_lim = int(self.motor.step_count)
+                    self.control.pos_max_lb.text = str(self.motor.upper_lim)
     
+    def zero_stepper_pos(self):
+        if self.motor.connected:
+            self.motor.zero_steps()
 
 
 
     def init_board_connection(self, debug=False):
         config = self.config['settings']
         if debug: 
-            motor = DebugStepperMotor(config['Puls Pin'], config['Direction pin'], config['Com Port'])
+            motor = DebugStepperMotor(int(config['Puls Pin']), int(config['Direction pin']), config['Com Port'])
         else:
-            motor = StepperMotor(config['Puls Pin'], config['Direction pin'], config['Com Port'])
+            motor = StepperMotor(int(config['Puls Pin']), int(config['Direction pin']), config['Com Port'])
 
         motor.resolution = int(config['Stepper Resolution'])
         motor.speed = float(config['Speed'])
+
         return motor
 
 

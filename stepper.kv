@@ -12,7 +12,7 @@ Widget:
     pos_max_lb: pos_max_lb
 
     GridLayout:
-        rows: 6
+        rows: 7
         spacing:10
         GridLayout:
             cols: 3
@@ -133,8 +133,9 @@ Widget:
                         size: 30, 30
         
         GridLayout:
-            cols: 3
-            rows: 2
+            cols: 5
+            rows: 1
+            height: 30
             spacing: 10
 
             BoxLayout:
@@ -147,28 +148,63 @@ Widget:
                 height: 30
                 size_hint_y: None 
                 Label:
+                    text: f''
+            
+            BoxLayout:
+                height: 30
+                size_hint_y: None 
+                Label:
                     id: pos_current_lb
                     text: f'000'
             BoxLayout:
                 height: 30
                 size_hint_y: None 
                 Label:
+                    text: f''
+            BoxLayout:
+                height: 30
+                size_hint_y: None 
+                Label:
                     id: pos_max_lb
                     text: f'000'
+        GridLayout:
+            cols: 5
+            rows: 1
+            height: 30
+            spacing: 10
+
             Button:
                 text: 'Set Min Position'
                 id: set_pos_min_bt
+                height: 30
                 size_hint_y: None
                 on_press: app.set_stepper_lim('lower')
             Button:
+                text: 'Reset Min Position'
+                id: reset_pos_min_bt
+                height: 30
+                size_hint_y: None
+                on_press: app.set_stepper_lim('lower', reset=True)
+
+            Button:
                 text: 'Zero Position'
                 id: set_pos_zero_bt
+                height: 30
                 size_hint_y: None
+                on_press: app.zero_stepper_pos()
             Button:
                 text: 'Set Max Position'
                 id: set_pos_max_bt
+                height: 30
                 size_hint_y: None
                 on_press: app.set_stepper_lim('upper')
+                
+            Button:
+                text: 'Reset Max Position'
+                id: reset_pos_max_bt
+                height: 30
+                size_hint_y: None
+                on_press: app.set_stepper_lim('upper', reset=True)
 
         GridLayout:
             cols: 3

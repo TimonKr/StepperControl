@@ -208,29 +208,31 @@ class DebugStepperMotor(StepperMotor):
 
         
 
-import time
+# import time
 
-if __name__ == "__main__":
-    motor = DebugStepperMotor(stepper_pin=1, dir_pin=2, com_port='COM3')
+# if __name__ == "__main__":
+#     #motor = DebugStepperMotor(stepper_pin=1, dir_pin=2, com_port='COM3')
 
-    # Setting properties and observing debug prints
-    motor.pin_dir = 3  # Should print "Setting pin_dir to 3"
-    current_speed = motor.speed  # Should print "Getting speed"
+#     # Setting properties and observing debug prints
+#     # motor.pin_dir = 3  # Should print "Setting pin_dir to 3"
+#     # current_speed = motor.speed  # Should print "Getting speed"
 
-    # You can also simulate sending commands and receiving responses by modifying the buffer.
-    motor._ser.buffer.append(b'100\n')  # Simulate response for speed
-    print(motor.speed)  # Sh
+#     # # You can also simulate sending commands and receiving responses by modifying the buffer.
+#     # motor._ser.buffer.append(b'100\n')  # Simulate response for speed
+#     #  # Sh
 
-    t = StepperMotor(10, 11,'COM5')
+    # t = StepperMotor(6, 7,'COM17')
     # t.resolution = 1600
-    
+
     # t.speed = 0.4
-    
+
     # t.direction = True
 
     # t.rotate()
-    
+
     # time.sleep(2)
+    # t.stop()
+
     # t.direction = False
     # t.stop()
     # print('out', t.step_count)
