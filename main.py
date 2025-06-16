@@ -116,7 +116,9 @@ class StepperMotor:
             self._timer.init(period=int(1000*self._delay), mode=Timer.PERIODIC, callback=self.step_motor)
 
     def step_motor(self, t):
-        if self._step_limit_lower<=self.step_count <=self._step_limit_upper:
+        condition_bw = self._step_limit_lower<=self.step_count or self._step_increment > 0
+        condition_fw = self.step_count<=self._step_limit_upper or self._step_increment < 0
+        if condition_bw and condition_fw:
             self._pin_pul.on()
             time.sleep(self._delay)
             self._pin_pul.off()
